@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Pedido;
+use App\Http\Resources\PedidoResource;
 
 class PedidoController extends Controller
 {
@@ -15,6 +17,7 @@ class PedidoController extends Controller
     {
         //
          $pedido = Pedido::all();
+         return PedidoResource::collection($pedido);
     }
 
     /**
@@ -35,7 +38,14 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $pedido= new Pedido();
+        $pedido->fecha=$request->fecha;
+        $pedido->orden=$request->orden;
+        $pedido->total=$request->total;
+
+        if($pedido->save()){
+            return new PedidoResource($pedido);
+        }
     }
 
     /**
@@ -46,7 +56,7 @@ class PedidoController extends Controller
      */
     public function show($id)
     {
-        //
+        return Pedido::findOrFail($id);
     }
 
     /**
@@ -69,7 +79,13 @@ class PedidoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $pedido= Pedido::findOrFail($id);
+        $pedido->orden=$request->orden;
+        $pedido->total=$request->total;
+
+        if($pedido->save()){
+            return new PedidoResource($pedido);
+        }
     }
 
     /**
@@ -80,6 +96,10 @@ class PedidoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $pedido= Pedido::findOrFail($id);
+
+        if($pedido->delete()){
+            return new PedidoResource($pedido);
+        }
     }
 }

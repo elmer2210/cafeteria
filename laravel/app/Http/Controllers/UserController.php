@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use App\Http\Resources\UserResource;
+
 class UserController extends Controller
 {
     /**
@@ -14,6 +17,7 @@ class UserController extends Controller
     public function index()
     {
         $user = User::all();
+        return UserResource::collection($user);
     }
 
     /**
@@ -34,7 +38,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user= new User();
+        $user->cedula=$request->cedula;
+        $user->nombre=$request->nombre;
+        $user->apellido=$request->apellido;
+        $user->direccion=$request->direccion;
+        $user->telefono=$request->telefono;
+        $user->rol_id=$request->rol_id;
+
+        if($user->save()){
+            return new UserResource($user);
+        }
     }
 
     /**
@@ -45,7 +59,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return User::findOrFail($id);
     }
 
     /**
@@ -68,7 +82,16 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user= User::findOrFail($id);
+        $user->cedula=$request->cedula;
+        $user->nombre=$request->nombre;
+        $user->apellido=$request->apellido;
+        $user->direccion=$request->direccion;
+        $user->telefono=$request->telefono;
+
+        if($user->save()){
+            return new UserResource($user);
+        }
     }
 
     /**
@@ -79,6 +102,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user=User::findOrFail($id);
+
+        if($user->delete()){
+            return new UserResource($user);
+        }
     }
 }

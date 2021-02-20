@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Producto;
+use App\Http\Resources\ProductoResource;
 
 class ProductoController extends Controller
 {
@@ -15,6 +17,7 @@ class ProductoController extends Controller
     {
         //
          $producto = Producto::all();
+         return ProductoResource::collection($producto);
     }
 
     /**
@@ -35,7 +38,14 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $producto= new Producto();
+        $producto->nombre=$request->nombre;
+        $producto->detalle=$request->detalle;
+        $producto->precio=$request->precio;
+
+        if($producto->save()){
+            return new ProductoResource($producto);
+        }
     }
 
     /**
@@ -46,7 +56,7 @@ class ProductoController extends Controller
      */
     public function show($id)
     {
-        //
+        return Producto::findOrFail($id);
     }
 
     /**
@@ -69,7 +79,14 @@ class ProductoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $producto= Producto::findOrFail($id);
+        $producto->nombre=$request->nombre;
+        $producto->detalle=$request->detalle;
+        $producto->precio=$request->precio;
+
+        if($producto->save()){
+            return new ProductoResource($producto);
+        }
     }
 
     /**
@@ -80,6 +97,10 @@ class ProductoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $producto= Producto::findOrFail($id);
+
+        if($producto->delete()){
+            return new ProductoResource($producto);
+        }
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePedidosTable extends Migration
+class AddRolsInUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreatePedidosTable extends Migration
      */
     public function up()
     {
-        Schema::create('pedidos', function (Blueprint $table) {
-            $table->id();
-            $table->date('fecha');
-            $table->string('orden');
-            $table->integer('total');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->unsignedBigInteger('rol_id');
+            $table->foreign('rol_id')->references('id')->on('rols')
+            ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -29,6 +27,8 @@ class CreatePedidosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pedidos');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 }
